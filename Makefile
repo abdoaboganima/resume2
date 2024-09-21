@@ -1,12 +1,12 @@
-.PHONY: build clean resume
+.PHONY:  clean resume
 
-TEX_FILE := AmrAbed.tex
+RESUME := AmrAbed
 
-build:
-	docker compose run latexmk $(TEX_FILE)
-
+%.pdf: %.tex sections/*
+	docker compose run latexmk $<
+	docker compose down && docker container prune -f && docker rmi latexmk
 clean:
 	rm -f *.aux *.log *.out *.bbl *.blg *.fls *.fdb_latexmk  # workaroud since the -c option is not working
-	docker compose down && docker container prune -f && docker rmi latexmk
 
-resume: build clean
+
+resume: $(RESUME).pdf
